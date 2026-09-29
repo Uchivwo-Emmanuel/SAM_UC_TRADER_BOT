@@ -1,10 +1,10 @@
-import { date, index, jsonb, numeric, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, date, index, jsonb, numeric, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 const id = () => uuid("id").defaultRandom().primaryKey();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).defaultNow().notNull();
 const timestamptz = (name: string) => timestamp(name, { withTimezone: true });
 
-export const users = pgTable("user", { id: text("id").primaryKey(), name: text("name").notNull(), email: text("email").notNull().unique(), emailVerified: timestamptz("email_verified"), image: text("image"), role: text("role").notNull().default("viewer"), createdAt: createdAt(), updatedAt: timestamptz("updated_at").defaultNow().notNull() });
+export const users = pgTable("user", { id: text("id").primaryKey(), name: text("name").notNull(), email: text("email").notNull().unique(), emailVerified: boolean("email_verified").notNull().default(false), image: text("image"), role: text("role").notNull().default("viewer"), createdAt: createdAt(), updatedAt: timestamptz("updated_at").defaultNow().notNull() });
 export const sessions = pgTable("session", { id: text("id").primaryKey(), userId: text("user_id").notNull().references(() => users.id), token: text("token").notNull().unique(), expiresAt: timestamptz("expires_at").notNull(), ipAddress: text("ip_address"), userAgent: text("user_agent"), createdAt: createdAt(), updatedAt: timestamptz("updated_at").defaultNow().notNull() }, t => [index("session_user_idx").on(t.userId)]);
 export const accounts = pgTable("account", { id: text("id").primaryKey(), userId: text("user_id").notNull().references(() => users.id), accountId: text("account_id").notNull(), providerId: text("provider_id").notNull(), accessToken: text("access_token"), refreshToken: text("refresh_token"), idToken: text("id_token"), accessTokenExpiresAt: timestamptz("access_token_expires_at"), refreshTokenExpiresAt: timestamptz("refresh_token_expires_at"), scope: text("scope"), password: text("password"), createdAt: createdAt(), updatedAt: timestamptz("updated_at").defaultNow().notNull() }, t => [index("account_user_idx").on(t.userId)]);
 /** OAuth bearer tokens are encrypted before persistence and are never returned by API routes. */
