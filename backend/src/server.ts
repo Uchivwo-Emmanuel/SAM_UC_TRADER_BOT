@@ -24,11 +24,14 @@ app.get("/ready", async (_req, res) => {
   try { await checkDatabase(); return res.json({ status: "ready", trading: "disabled" }); }
   catch { return res.status(503).json({ status: "unavailable", trading: "disabled" }); }
 });
+// This callback is owned by the Deriv OAuth integration, not Better Auth.
+// It must be registered first so the catch-all Better Auth handler cannot
+// consume it and return a 404.
+app.get("/api/auth/deriv/callback", completeDerivOAuth);
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json({ limit: "128kb" }));
 app.get("/api/me", requireSession, (_request, response) => response.json(response.locals.session));
 app.get("/api/integrations/deriv/oauth/authorize", requireOwner, beginDerivOAuth);
-app.get("/api/auth/deriv/callback", completeDerivOAuth);
 app.get("/api/integrations/deriv/oauth/status", requireOwner, async (_request, response, next) => {
   try { response.json(await getDerivOAuthStatus(response.locals.session.user.id)); } catch (error) { next(error); }
 });
