@@ -1,0 +1,8 @@
+{
+  "name": "sam-uc-analysis-worker",
+  "private": true,
+  "type": "module",
+  "scripts": { "typecheck": "tsc --noEmit", "test": "vitest run" },
+  "dependencies": { "@trigger.dev/sdk": "^4.4.1" },
+  "devDependencies": { "@types/node": "^26.6.3", "typescript": "^6.0.3", "vitest": "^5.0.2" }
+}
