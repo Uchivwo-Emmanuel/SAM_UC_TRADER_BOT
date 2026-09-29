@@ -10,6 +10,7 @@ const schema = z.object({
   DATABASE_URL: z.string().min(1),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.string().url(),
+  BETTER_AUTH_TRUSTED_ORIGINS: z.string().optional(),
   LIVE_TRADING_ENABLED: z.enum(["true", "false"]).default("false").transform((value) => value === "true"),
   DERIV_ACCOUNT_MODE: z.enum(["demo", "live"]).default("demo"),
   DERIV_APP_ID: z.string().optional(),
