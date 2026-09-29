@@ -27,3 +27,7 @@ Trigger.dev runs bounded background jobs (daily/weekly reports, missed-report re
 ## Getting started later
 
 Copy each `.env.example` to `.env` within its own folder, then supply real values through a secret manager or local environment. Never commit `.env` files.
+
+## Owner access
+
+The dashboard is invite-only: public registration is disabled. The two owner accounts are created from the VPS through the interactive server-side procedure in `backend/OWNER_PROVISIONING.md`; passwords are never placed in environment files or shell commands.
