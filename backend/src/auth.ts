@@ -9,7 +9,7 @@ const commonOptions = {
     provider: "pg" as const,
     schema: { user: users, session: sessions, account: accounts, verification: verifications }
   }),
-  trustedOrigins: (config.BETTER_AUTH_TRUSTED_ORIGINS ?? config.CORS_ORIGIN).split(",").map((origin) => origin.trim()).filter(Boolean),
+  trustedOrigins: [...new Set([config.CORS_ORIGIN, config.BETTER_AUTH_TRUSTED_ORIGINS].filter(Boolean).flatMap((value) => value!.split(",")).map((origin) => origin.trim()).filter(Boolean))],
   advanced: { defaultCookieAttributes: { secure: config.NODE_ENV === "production", sameSite: "lax" as const } }
 };
 

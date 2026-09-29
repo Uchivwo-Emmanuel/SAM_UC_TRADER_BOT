@@ -6,7 +6,8 @@ const schema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   BIND_HOST: z.string().default("127.0.0.1"),
   LOG_LEVEL: z.string().default("info"),
-  CORS_ORIGIN: z.string().url(),
+  // Comma-separated HTTPS origins are supported for the apex and www domains.
+  CORS_ORIGIN: z.string().min(1),
   DATABASE_URL: z.string().min(1),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.string().url(),

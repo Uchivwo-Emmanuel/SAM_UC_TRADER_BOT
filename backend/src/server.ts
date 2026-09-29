@@ -17,8 +17,9 @@ import { z } from "zod";
 
 const app = express();
 const logger = pino({ level: config.LOG_LEVEL });
+const allowedOrigins = [...new Set([config.CORS_ORIGIN, config.BETTER_AUTH_TRUSTED_ORIGINS].filter(Boolean).flatMap((value) => value!.split(",")).map((origin) => origin.trim()).filter(Boolean))];
 app.use(pinoHttp({ logger }));
-app.use(cors({ origin: config.CORS_ORIGIN, credentials: true }));
+app.use(cors({ origin: (origin, callback) => callback(null, !origin || allowedOrigins.includes(origin)), credentials: true }));
 app.get("/health", (_req, res) => res.json({ status: "ok", environment: config.NODE_ENV, version: "0.1.0", trading: "disabled" }));
 app.get("/ready", async (_req, res) => {
   try { await checkDatabase(); return res.json({ status: "ready", trading: "disabled" }); }
