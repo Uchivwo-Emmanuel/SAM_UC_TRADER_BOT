@@ -50,4 +50,4 @@ app.post("/api/analysis/reports/:id/reviews", requireOwner, async (request, resp
   try { const reportId = z.string().uuid().parse(request.params.id); const body = z.object({ decision: z.enum(["reviewed", "accepted", "rejected", "needs_discussion"]), notes: z.string().max(2000).optional() }).parse(request.body); const review = await reviewReport(reportId, response.locals.session.user.id, body.decision, body.notes); response.status(201).json(review); } catch (error) { next(error); }
 });
 app.use((error: unknown, _request: express.Request, response: express.Response, next: express.NextFunction) => { void next; logger.warn({ error: error instanceof Error ? error.message : "request rejected" }, "safe request failure"); response.status(400).json({ error: "request could not be processed" }); });
-app.listen(config.PORT, () => logger.info({ port: config.PORT }, "backend listening"));
+app.listen(config.PORT, config.BIND_HOST, () => logger.info({ host: config.BIND_HOST, port: config.PORT }, "backend listening"));
